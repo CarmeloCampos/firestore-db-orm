@@ -1,0 +1,40 @@
+{
+  "name": "firestore-db-orm",
+  "description": "ORM for the database in Firestore",
+  "version": "1.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.1.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.8",
+    "typescript": "^5.4.5"
+  },
+  "keywords": [
+    "firebase",
+    "firestore",
+    "firestore db",
+    "firebase orm",
+    "firebase orm db"
+  ],
+  "author": {
+    "name": "CarmeloCampos",
+    "email": "hola@carmelocampos.com"
+  },
+  "homepage": "https://github.com/CarmeloCampos/firestore-db-orm#readme",
+  "license": "MPL-2.0"
+}
