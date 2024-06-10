@@ -13,7 +13,6 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "prepublishOnly": "npm run build",
     "lint": "tsc"
   },
   "dependencies": {
@@ -40,6 +39,9 @@
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CarmeloCampos/firestore-db-orm.git"
+    "url": "git+https://github.com/CarmeloCampos/firestore-db-orm.git"
+  },
+  "publishConfig": {
+    "provenance": true
   }
 }
