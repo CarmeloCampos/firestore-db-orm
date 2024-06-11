@@ -5,6 +5,7 @@ import {
   Query,
 } from "firebase-admin/firestore";
 import { v4 } from "uuid";
+import type { SearchParams } from "./types";
 
 type FirestoreData = { [key: string]: any };
 
@@ -45,7 +46,7 @@ export class FirestoreORM<T extends FirestoreData> {
     await this.collection.doc(id).delete();
   }
 
-  async finds(searchParams: Partial<T> = {}): Promise<T[]> {
+  async finds(searchParams: SearchParams = {}): Promise<T[]> {
     let query: Query<T> = this.collection;
     for (const [key, value] of Object.entries(searchParams)) {
       query = query.where(key, "==", value);
@@ -54,7 +55,7 @@ export class FirestoreORM<T extends FirestoreData> {
     return querySnapshot.docs.map((doc) => this.fromFirestore(doc));
   }
 
-  async findOne(searchParams: Partial<T>): Promise<T | undefined> {
+  async findOne(searchParams: SearchParams): Promise<T | undefined> {
     const [result] = await this.finds(searchParams);
     return result;
   }
