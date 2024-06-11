@@ -1,7 +1,9 @@
 import userORM from "./user.orm";
+import { v4 } from "uuid";
 
 (async () => {
   const newUser = await userORM.add({
+    id: v4(),
     email: "test@example.com",
     password: "securepassword",
   });
