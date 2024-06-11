@@ -21,7 +21,7 @@ export class FirestoreORM<T extends FirestoreData> {
     ) as CollectionReference<T>;
   }
 
-  async add(data: Required<T>): Promise<T> {
+  async add(data: T): Promise<T> {
     const id = v4();
     const dataWithId = { ...data, id } as T;
     const docRef = this.collection.doc(id);
