@@ -8,7 +8,7 @@ operations.
 Install firebase-db-orm with bun
 
 ```bash
-bun add firebase-db-orm
+bun add firestore-db-orm
 ```
 
 ## Instantiate the ORM
