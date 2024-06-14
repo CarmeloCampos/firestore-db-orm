@@ -65,6 +65,6 @@ export class FirestoreORM<T extends FirestoreData> {
     if (!data) {
       throw new Error(`No data found in document with id: ${snapshot.id}`);
     }
-    return { id: snapshot.id, ...data } as T;
+    return { ...data, id: snapshot.id } as T;
   }
 }
