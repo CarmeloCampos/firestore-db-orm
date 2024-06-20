@@ -16,7 +16,7 @@ bun add firestore-db-orm
 ```typescript
 import { FirestoreORM } from "firebase-db-orm";
 import { db } from "./firestore";
-import { IUser } from "./user.interface";
+import type { IUser } from "./user.interface";
 
 const userORM = new FirestoreORM<IUser>(db, "users");
 
@@ -27,9 +27,11 @@ export default userORM;
 
 ```typescript
 import userORM from "./user.orm";
+import { v4 } from "uuid";
 
 (async () => {
   const newUser = await userORM.add({
+    id: v4(),
     email: "test@example.com",
     password: "securepassword",
   });
@@ -42,7 +44,7 @@ import userORM from "./user.orm";
 
   await userORM.update(newUser.id, { email: "newemail@example.com" });
 
-  await userORM.delete(newUser.id);
+  await newUser.ref.delete();
 })();
 ```
 

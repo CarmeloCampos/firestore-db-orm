@@ -7,9 +7,12 @@ import {
 import { v4 } from "uuid";
 import type { SearchParams } from "./types";
 
-type FirestoreData = { [key: string]: any };
+export type FirestoreModelWithRef<T> = T & {
+  id: string;
+  ref: firestore.DocumentReference<T>;
+};
 
-export class FirestoreORM<T extends FirestoreData> {
+export class FirestoreORM<T> {
   protected collection: CollectionReference<T>;
 
   constructor(
@@ -21,7 +24,7 @@ export class FirestoreORM<T extends FirestoreData> {
     ) as CollectionReference<T>;
   }
 
-  async add(data: T): Promise<T> {
+  async add(data: T): Promise<FirestoreModelWithRef<T>> {
     const id = v4();
     const dataWithId = { ...data, id } as T;
     const docRef = this.collection.doc(id);
@@ -30,7 +33,7 @@ export class FirestoreORM<T extends FirestoreData> {
     return this.fromFirestore(doc);
   }
 
-  async get(id: string): Promise<T | undefined> {
+  async get(id: string): Promise<FirestoreModelWithRef<T> | undefined> {
     const doc = await this.collection.doc(id).get();
     if (doc.exists) {
       return this.fromFirestore(doc);
@@ -39,14 +42,16 @@ export class FirestoreORM<T extends FirestoreData> {
   }
 
   async update(id: string, data: Partial<T>): Promise<void> {
-    await this.collection.doc(id).update(data as firestore.UpdateData<T>);
+    await this.collection.doc(id).update(data);
   }
 
   async delete(id: string): Promise<void> {
     await this.collection.doc(id).delete();
   }
 
-  async finds(searchParams: SearchParams = {}): Promise<T[]> {
+  async finds(
+    searchParams: SearchParams = {},
+  ): Promise<FirestoreModelWithRef<T>[]> {
     let query: Query<T> = this.collection;
     for (const [key, value] of Object.entries(searchParams)) {
       query = query.where(key, "==", value);
@@ -55,16 +60,24 @@ export class FirestoreORM<T extends FirestoreData> {
     return querySnapshot.docs.map((doc) => this.fromFirestore(doc));
   }
 
-  async findOne(searchParams: SearchParams): Promise<T | undefined> {
+  async findOne(
+    searchParams: SearchParams,
+  ): Promise<FirestoreModelWithRef<T> | undefined> {
     const [result] = await this.finds(searchParams);
     return result;
   }
 
-  protected fromFirestore(snapshot: DocumentSnapshot<T>): T {
+  protected fromFirestore(
+    snapshot: DocumentSnapshot<T>,
+  ): FirestoreModelWithRef<T> {
     const data = snapshot.data();
     if (!data) {
       throw new Error(`No data found in document with id: ${snapshot.id}`);
     }
-    return { ...data, id: snapshot.id } as T;
+    return {
+      ...data,
+      id: snapshot.id,
+      ref: snapshot.ref,
+    } as FirestoreModelWithRef<T>;
   }
 }
