@@ -16,5 +16,5 @@ import { v4 } from "uuid";
 
   await userORM.update(newUser.id, { email: "newemail@example.com" });
 
-  await newUser.ref.delete();
+  await userORM.delete(newUser.id);
 })();
