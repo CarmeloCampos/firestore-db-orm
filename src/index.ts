@@ -47,7 +47,16 @@ export class FirestoreORM<T> {
   async finds(searchParams: SearchParams = {}): Promise<T[]> {
     let query: Query<T> = this.collection;
     for (const [key, value] of Object.entries(searchParams)) {
-      query = query.where(key, "==", value);
+      if (
+        typeof value === "object" &&
+        "value" in value &&
+        "where" in value &&
+        value.where
+      ) {
+        query = query.where(key, value.where, value.value);
+      } else {
+        query = query.where(key, "==", value);
+      }
     }
     const querySnapshot = await query.get();
     return querySnapshot.docs.map((doc) => this.fromFirestore(doc));

@@ -17,4 +17,11 @@ import { v4 } from "uuid";
   await userORM.update(newUser.id, { email: "newemail@example.com" });
 
   await userORM.delete(newUser.id);
+
+  const otherUser = await userORM.findOne({
+    email: {
+      where: "==",
+      value: "email@asd.com",
+    },
+  });
 })();
