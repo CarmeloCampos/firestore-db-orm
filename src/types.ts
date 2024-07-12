@@ -6,5 +6,5 @@ export interface SearchParam {
 }
 
 export type SearchParams = {
-  [key: string]: any | SearchParam;
+  [key: string]: any | SearchParam | SearchParam[];
 };

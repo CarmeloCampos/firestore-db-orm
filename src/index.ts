@@ -5,7 +5,7 @@ import {
   Query,
 } from "firebase-admin/firestore";
 import { v4 } from "uuid";
-import type { SearchParams } from "./types";
+import type { SearchParam, SearchParams } from "./types";
 
 export class FirestoreORM<T> {
   protected collection: CollectionReference<T>;
@@ -46,18 +46,8 @@ export class FirestoreORM<T> {
 
   async finds(searchParams: SearchParams = {}): Promise<T[]> {
     let query: Query<T> = this.collection;
-    for (const [key, value] of Object.entries(searchParams)) {
-      if (
-        typeof value === "object" &&
-        "value" in value &&
-        "where" in value &&
-        value.where
-      ) {
-        query = query.where(key, value.where, value.value);
-      } else {
-        query = query.where(key, "==", value);
-      }
-    }
+    query = this.buildQuery(query, searchParams);
+
     const querySnapshot = await query.get();
     return querySnapshot.docs.map((doc) => this.fromFirestore(doc));
   }
@@ -73,5 +63,30 @@ export class FirestoreORM<T> {
       throw new Error(`No data found in document with id: ${snapshot.id}`);
     }
     return { ...data, id: snapshot.id } as T;
+  }
+
+  private buildQuery(query: Query<T>, searchParams: SearchParams): Query<T> {
+    for (const [key, value] of Object.entries(searchParams)) {
+      if (Array.isArray(value)) {
+        for (const condition of value) {
+          if (this.isValidCondition(condition)) {
+            query = query.where(key, condition.where, condition.value);
+          }
+        }
+      } else if (this.isValidCondition(value)) {
+        query = query.where(key, value.where, value.value);
+      } else {
+        query = query.where(key, "==", value);
+      }
+    }
+    return query;
+  }
+
+  private isValidCondition(condition: any): condition is SearchParam {
+    return (
+      typeof condition === "object" &&
+      "value" in condition &&
+      "where" in condition
+    );
   }
 }
