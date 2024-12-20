@@ -1,7 +1,7 @@
 {
   "name": "firestore-db-orm",
   "description": "ORM for the database in Firestore",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,14 +17,14 @@
     "format": "prettier ./ --write"
   },
   "dependencies": {
-    "firebase-admin": "^12.2.0",
+    "firebase-admin": "^12.7.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/uuid": "^9.0.8",
     "prettier": "3.3.2",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3"
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
   },
   "keywords": [
     "firebase",
